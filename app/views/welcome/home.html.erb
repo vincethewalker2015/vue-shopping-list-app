@@ -1,2 +1,77 @@
-<h1>Welcome#home</h1>
-<p>Find me in app/views/welcome/home.html.erb</p>
+<div id="app" class="pushable">
+            <div class="ui top fixed menu inverted">
+              <div class="ui logo item">
+                 <b><i class="icon shopping bag olive"></i>Shopping List</b>
+              </div>
+              <div class="item">
+                <div class="ui message olive">
+                  Use this app to go shopping with!
+                </div>
+              </div>
+              <div class="item" v-if="message">
+                <div class="ui message violet">
+                  <i class="icon info"></i> {{ message }}
+                </div>
+              </div>
+            </div>
+           <div class="ui container pusher">
+             <div class="ui two column centered grid">
+                <div class="">
+                   <div id="todo" class="tasklist ">
+                    <div class="ui header">
+                       <i class="icon play circle orange"></i>On The List ({{ todoTasks.length }})
+                    </div>
+                      <task 
+                          v-bind:task="task"
+                          v-for="task in todoTasks" />
+                   </div>
+                   <div id="completed" class="tasklist">
+                      <div class="ui header">
+                       <i class="icon check circle green"></i>In The Basket ({{ completedTasks.length }})
+                      </div>
+                     <task
+                          v-bind:task="task"
+                          v-for="task in completedTasks" />
+                   </div>
+                </div>
+              <div class=" item-add">
+                <div id="editor" class="details ui raise segment grey ">
+                  <div class="ui header grid">
+                    <div class="left floated six wide column ">
+                      <i class="icon edit orange"></i>Add
+                    </div>
+                    <div class="right floated six wide column">
+                      <button class="ui green button right floated" v-on:click="clear">
+                         New
+                      </button>
+                    </div>
+                  </div>
+                  <div class="ui segment">
+                    <form class="ui form" 
+                        v-on:submit.prevent="(action == 'create') ? createTask($event) : updateTask($event, task.id)">
+                      
+                      <input type="hidden" name="id" v-model="task.id"/>
+                      
+                      <div class="field">
+                        <label>Name</label>
+                        <input type="text" name="name" placeholder="Name" required="true" v-model="task.name" />
+                      </div>
+                      
+                      <div class="field">
+                        <label>Description</label>
+                        <input type="text" name="description" placeholder="Description" required="true" v-model="task.description" />
+                      </div>
+                      <div class="field inline">
+                        <label>Completed</label>
+                        <input type="checkbox" name="completed" v-model="task.completed" />
+                      </div>
+                      <button class="ui button green">
+                        Create
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+             </div>
+           </div>
+        </div>
