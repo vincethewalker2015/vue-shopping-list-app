@@ -1,5 +1,7 @@
 import Vue from 'vue';
 
+const Api = require('./api');
+
 document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -29,10 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } 
       },
       data: {
-          tasks: [
-            { id: 1, name: 'Item 1', description: 'Milk', completed: false},
-            { id: 2, name: 'Item 2', description: 'Bread', completed: true},
-          ],
+          tasks: [],
           task: {},
           message: '',
           action: 'create'
@@ -49,6 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       },
       methods: {
+        listTasks: function() {
+          Api.listTasks().then(function(response){
+            app.tasks = response;
+          })
+        },
         clear: function (){
           this.task = {};
           this.action = 'create';
@@ -74,13 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
             this.task.completed = true;
           }
           
-          let taskId = this.nextId;
-          this.task.id = taskId;
           
-          let newTask = Object.assign({}, this.task);
-          this.tasks.push(newTask);
-          this.clear();
-          this.message = `Task ${taskId} Created`;
+          Api.createTask(this.task).then(function(response) {
+            app.listTasks();
+            app.clear();
+            app.message = `Task ${response.id} Created`;
+          })
+          
         },
         editTask: function(event, id){
           event.stopImmediatePropagation();
@@ -118,11 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
             this.$delete(this.tasks, taskIndex);
             this.message = `Task ${id} Deleted`;
           }
-          
-          console.log('task deleted');
         }
-      }
-      
+      },
+      beforeMount() { this.listTasks() }
       
   });
 });
