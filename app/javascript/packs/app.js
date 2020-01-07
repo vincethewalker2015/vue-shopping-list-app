@@ -1,5 +1,7 @@
 import Vue from 'vue';
 
+const Api = require('./api');
+
 document.addEventListener("DOMContentLoaded", () => {
 
 
@@ -29,10 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 } 
       },
       data: {
-          tasks: [
-            { id: 1, name: 'Item 1', description: 'Milk', completed: false},
-            { id: 2, name: 'Item 2', description: 'Bread', completed: true},
-          ],
+          tasks: [],
           task: {},
           message: '',
           action: 'create'
@@ -49,6 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       },
       methods: {
+        listTasks: function() {
+          Api.listTasks().then(function(response){
+            app.tasks = response;
+          })
+        },
         clear: function (){
           this.task = {};
           this.action = 'create';
@@ -62,8 +66,14 @@ document.addEventListener("DOMContentLoaded", () => {
           
           if(task) {
             task.completed = !task.completed;
+            this.task = task;
             console.log('task toggled');
-            this.message = `Task ${id} Updated`;
+            Api.updateTask(this.task).then(function(response){
+              app.listTasks();
+              app.clear();
+              let status = response.completed ? 'completed' : 'in progress';
+              app.message = `Task ${response.id} is ${status}.`;
+            })
           }
         },
         createTask: function(event) {
@@ -74,13 +84,13 @@ document.addEventListener("DOMContentLoaded", () => {
             this.task.completed = true;
           }
           
-          let taskId = this.nextId;
-          this.task.id = taskId;
           
-          let newTask = Object.assign({}, this.task);
-          this.tasks.push(newTask);
-          this.clear();
-          this.message = `Task ${taskId} Created`;
+          Api.createTask(this.task).then(function(response) {
+            app.listTasks();
+            app.clear();
+            app.message = `Task ${response.id} Created`;
+          })
+          
         },
         editTask: function(event, id){
           event.stopImmediatePropagation();
@@ -99,15 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         updateTask: function(event, id){
           event.stopImmediatePropagation();
-          let task = this.tasks.find(item => item.id == id);
+
           
-          if(task) {
-            task.name = this.task.name;
-            task.description = this.task.description;
-            task.completed = this.task.completed;
-            console.log('task updated');
-            this.message = `Task ${id} Updated`;
-          }
+            Api.updateTask(this.task).then(function(response){
+              app.listTasks();
+              app.clear();
+              app.message = `Task ${response.id} updated.`;
+            })
+          
         },
         deleteTask: function(event, id){
           event.stopImmediatePropagation();
@@ -115,14 +124,14 @@ document.addEventListener("DOMContentLoaded", () => {
           let taskIndex = this.tasks.findIndex(item => item.id == id);
           
           if(taskIndex > -1){
-            this.$delete(this.tasks, taskIndex);
-            this.message = `Task ${id} Deleted`;
+            Api.deleteTask(id).then(function(response){
+              app.$delete(app.tasks, taskIndex);
+              app.message = `Task ${id} Deleted`;
+            });
           }
-          
-          console.log('task deleted');
         }
-      }
-      
+      },
+      beforeMount() { this.listTasks() }
       
   });
 });
