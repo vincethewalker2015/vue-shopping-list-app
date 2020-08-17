@@ -36,7 +36,7 @@ export function updateTask (task) {
 }
 
 export function deleteTask (task_id) {
-  return axios.delete('/tasks/${task_id}.json')
+  return axios.delete(`/tasks/${task_id}.json`)
     .then(function (response){
       return 'success';
     })
