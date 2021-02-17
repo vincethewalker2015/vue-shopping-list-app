@@ -2,21 +2,21 @@
   "name": "vue_shopping_app",
   "private": true,
   "dependencies": {
-    "@rails/actioncable": "^6.0.0-alpha",
-    "@rails/activestorage": "^6.0.0-alpha",
-    "@rails/ujs": "^6.0.0-alpha",
-    "@rails/webpacker": "4.2.2",
+    "@rails/actioncable": "^6.1.2-1",
+    "@rails/activestorage": "^6.1.2-1",
+    "@rails/ujs": "^6.1.2-1",
+    "@rails/webpacker": "5.2.1",
     "axios": "^0.21.1",
-    "dot-prop": "^5.2.0",
+    "dot-prop": "^6.0.1",
     "http-proxy": "^1.18.1",
     "kind-of": "^6.0.3",
     "minimist": "^1.2.5",
     "node-forge": "^0.10.0",
-    "serialize-javascript": "^4.0.0",
-    "vue": "^2.6.11"
+    "serialize-javascript": "^5.0.1",
+    "vue": "^2.6.12"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "webpack-dev-server": "^3.10.1"
+    "webpack-dev-server": "^3.11.2"
   }
 }
